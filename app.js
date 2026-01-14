@@ -111,138 +111,252 @@ function generateNewsArray(count, category = null) {
 // Render Functions
 function renderHeroSection() {
     const heroSection = document.getElementById('heroSection');
-    const mainNews = generateNewsItem(0);
-    const sideNews = generateNewsArray(4); // 4 items for sidebar
-    const authorAvatarId = getRandomNumber(1, 99);
     
+    // Using random data but maintaining the requested structure
+    const mainNews = generateNewsItem(0, 'HUKUM');
+    const sideNews = generateNewsArray(4);
+    const authorAvatarId = getRandomNumber(1, 99);
+
     heroSection.innerHTML = `
         <div class="hero-featured">
-            <a href="#" class="hero-main">
-                <img src="${mainNews.image}" alt="${mainNews.title}">
-                <div class="hero-overlay">
-                    <!-- Author Info -->
-                    <div class="hero-author">
-                        <img src="https://i.pravatar.cc/40?img=${authorAvatarId}" alt="${mainNews.author}" class="hero-author-avatar">
-                        <span class="hero-author-name">${mainNews.author.toUpperCase()}</span>
+            <div class="hero-main-container">
+                <img src="${mainNews.image}" alt="${mainNews.title}" class="hero-main-img">
+                
+                <div class="hero-card-overlay">
+                    <div class="hero-card-header">
+                        <img src="https://i.pravatar.cc/100?img=${authorAvatarId}" alt="${mainNews.author}" class="hero-card-avatar">
+                        <span class="hero-card-author">${mainNews.author.toUpperCase()}</span>
                     </div>
                     
-                    <!-- Title -->
-                    <h1 class="hero-title">${mainNews.title.toUpperCase()}</h1>
+                    <h1 class="hero-card-title">${mainNews.title.toUpperCase()}</h1>
                     
-                    <!-- Excerpt -->
-                    <p class="hero-excerpt">${mainNews.excerpt}</p>
+                    <p class="hero-card-excerpt">${mainNews.excerpt}</p>
                     
-                    <!-- Bottom: Date & Category -->
-                    <div class="hero-bottom">
-                        <span class="hero-date">${mainNews.date}</span>
-                        <span class="hero-category-badge">${mainNews.category.toUpperCase()}</span>
+                    <div class="hero-card-footer">
+                        <span class="hero-card-date">${mainNews.date}</span>
+                        <span class="hero-card-category">${mainNews.category.toUpperCase()}</span>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
         
-        <div class="hero-sidebar">
-            ${sideNews.map((news, index) => {
-                const sideAuthorId = getRandomNumber(1, 99);
-                return `
-                <a href="#" class="hero-side-item">
-                    <div class="hero-side-thumb">
-                        <img src="${getPicsumImage(getRandomNumber(50, 200), 120, 80)}" alt="${news.title}">
-                    </div>
-                    <div class="hero-side-content">
-                        <div class="hero-side-meta">
-                            <img src="https://i.pravatar.cc/24?img=${sideAuthorId}" alt="${news.author}" class="hero-side-avatar">
-                            <span class="hero-side-author">${news.author.toUpperCase()}</span>
-                            <span class="hero-side-date">${news.date}</span>
+        <div class="hero-sidebar-wrapper">
+            <div class="hero-sidebar">
+                ${sideNews.map(news => {
+                    const sideAuthorId = getRandomNumber(1, 99);
+                    return `
+                    <a href="#" class="hero-side-item">
+                        <div class="hero-side-thumb">
+                            <img src="${getPicsumImage(getRandomNumber(50, 200), 120, 120)}" alt="${news.title}">
                         </div>
-                        <h3 class="hero-side-title">${news.title}</h3>
-                    </div>
-                </a>
-            `}).join('')}
+                        <div class="hero-side-content">
+                            <div class="hero-side-meta">
+                                <img src="https://i.pravatar.cc/24?img=${sideAuthorId}" alt="${news.author}" class="hero-side-avatar">
+                                <span class="hero-side-author">${news.author.toUpperCase()}</span>
+                                <span class="hero-side-date">${news.date}</span>
+                            </div>
+                            <h3 class="hero-side-title">${news.title}</h3>
+                        </div>
+                    </a>
+                `}).join('')}
+            </div>
         </div>
     `;
 }
 
 function renderLatestNews() {
     const container = document.getElementById('latestNews');
-    const news = generateNewsArray(6);
+    const news = generateNewsArray(3); // Need 3 items for the complex layout
     
-    container.innerHTML = news.map(item => `
-        <article class="news-card">
-            <a href="#" class="news-card-image">
-                <img src="${getPicsumImage(getRandomNumber(20, 180), 600, 400)}" alt="${item.title}">
-                <span class="news-card-category">${item.category}</span>
-            </a>
-            <div class="news-card-content">
-                <h3 class="news-card-title">${item.title}</h3>
-                <p class="news-card-excerpt">${item.excerpt}</p>
-                <div class="news-card-meta">
-                    <span>${item.author}</span>
-                    <span>•</span>
-                    <span>${item.date}</span>
+    container.innerHTML = `
+        <div class="latest-top-row">
+            <article class="latest-article-text">
+                <h3 class="latest-title-large">${news[0].title}</h3>
+                <p class="latest-excerpt">${news[0].excerpt}</p>
+                <div class="latest-meta">${news[0].date}</div>
+            </article>
+            
+            <div class="latest-vertical-divider"></div>
+            
+            <article class="latest-article-boxed">
+                <div class="latest-boxed-image">
+                    <img src="${news[1].image}" alt="${news[1].title}">
                 </div>
+                <div class="latest-boxed-content">
+                    <div class="latest-meta-row">
+                        <span>${news[1].date}</span>
+                        <span>Foto: Kontributor Bernas</span>
+                    </div>
+                    <h3 class="latest-title-medium">${news[1].title}</h3>
+                </div>
+            </article>
+        </div>
+        
+        <div class="latest-horizontal-divider"></div>
+        
+        <article class="latest-article-horizontal">
+            <div class="latest-horiz-image">
+                <img src="${news[2].image}" alt="${news[2].title}">
+                <span class="latest-horiz-caption">Foto: Elvis Sendouw</span>
+            </div>
+            <div class="latest-horiz-content">
+                <div class="latest-meta">${news[2].date}</div>
+                <h3 class="latest-title-large">${news[2].title}</h3>
             </div>
         </article>
-    `).join('');
+    `;
 }
 
-function renderCategoryNews(containerId, category) {
-    const container = document.getElementById(containerId);
-    const news = generateNewsArray(4, category);
-    
-    container.innerHTML = news.map(item => `
-        <a href="#" class="category-card">
-            <div class="category-card-image">
-                <img src="${getPicsumImage(getRandomNumber(30, 190), 300, 300)}" alt="${item.title}">
-            </div>
-            <div class="category-card-content">
-                <h4 class="category-card-title">${item.title}</h4>
-                <span class="category-card-meta">${item.date}</span>
-            </div>
-        </a>
-    `).join('');
-}
-
-function renderPopularNews() {
-    const container = document.getElementById('popularNews');
-    const news = generateNewsArray(5);
+function renderTrendingNews() {
+    const container = document.getElementById('trendingNews');
+    const news = generateNewsArray(6);
     
     container.innerHTML = news.map((item, index) => `
-        <div class="popular-item">
-            <span class="popular-number">${String(index + 1).padStart(2, '0')}</span>
-            <div class="popular-content">
-                <h4 class="popular-title">${item.title}</h4>
-                <span class="popular-meta">${item.views.toLocaleString()} views • ${item.time}</span>
+        <div class="trending-item-alt">
+            <div class="trending-number-bg">${index + 1}</div>
+            <div class="trending-content-alt">
+                <div class="trending-header-alt">
+                    <span class="trending-dot"></span>
+                    <h4 class="trending-title-alt">${item.title}</h4>
+                </div>
+                <div class="trending-meta-alt">
+                    <span class="trending-author">${item.author.toUpperCase()}</span>
+                    <span class="trending-date">${item.date}</span>
+                </div>
             </div>
         </div>
     `).join('');
 }
 
-function renderQuote() {
-    const container = document.getElementById('dailyQuote');
-    const authorTitles = [
-        { author: "Prof. Dr. Ahmad Wijaya", title: "Pakar Ekonomi" },
-        { author: "Dr. Sari Kusuma", title: "Analis Politik" },
-        { author: "Prof. Bambang Sutrisno", title: "Tokoh Budayawan" },
-        { author: "Dr. Maya Indah", title: "Pemerhati Sosial" }
-    ];
-    const selectedAuthor = getRandomItem(authorTitles);
+function renderCategoryNews(containerId, category) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const news = generateNewsArray(4, category);
     
-    container.innerHTML = `
-        <div class="quote-icon">❝</div>
-        <p class="quote-text">${generateQuote()}</p>
-        <div class="quote-author">${selectedAuthor.author}</div>
-        <div class="quote-title">${selectedAuthor.title}</div>
-    `;
+    container.innerHTML = news.map((item, index) => {
+        if (index === 0) {
+            // First item: Prominent Card
+            return `
+                <a href="#" class="category-card-v2">
+                    <div class="category-card-v2-img">
+                        <img src="${getPicsumImage(getRandomNumber(30, 190), 300, 200)}" alt="${item.title}">
+                    </div>
+                    <div class="category-card-v2-content">
+                        <h4 class="category-card-v2-title">${item.title}</h4>
+                        <div class="category-card-v2-meta">
+                            <span class="category-card-v2-date">${item.date}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        } else {
+            // Subsequent items: Text Only with Dot
+            return `
+                <a href="#" class="category-item-text">
+                    <span class="category-dot"></span>
+                    <h4 class="category-item-text-title">${item.title}</h4>
+                </a>
+            `;
+        }
+    }).join('');
 }
+
+
+
 
 function renderBreakingNews() {
     const ticker = document.getElementById('breakingTicker');
+    if (!ticker) return;
     const headlines = generateNewsArray(5).map(n => n.title);
     
     // Duplicate for seamless loop
     const content = headlines.map(h => `<span class="ticker-item">${h}</span>`).join('');
     ticker.innerHTML = content + content;
+}
+
+function renderTVSection() {
+    const headline = document.getElementById('tvHeadline');
+    const currentTitle = document.getElementById('tvCurrentPlayingTitle');
+    const playlist = document.getElementById('tvPlaylist');
+    
+    if (!headline || !playlist) return;
+
+    const mainTitle = generateTitle();
+    headline.innerHTML = `${mainTitle} <span class="highlight-blue">${getRandomItem(['INVESTASI', 'PENTING', 'TERKINI', 'NASIONAL'])}</span>`;
+    currentTitle.textContent = mainTitle;
+
+    const items = Array.from({ length: 5 }, (_, i) => ({
+        title: generateTitle(),
+        duration: `00:0${getRandomNumber(1, 9)}:${getRandomNumber(10, 59)}`,
+        image: `https://picsum.photos/seed/tv-item-${i}/150/100`
+    }));
+
+    playlist.innerHTML = items.map((item, index) => `
+        <div class="tv-item ${index === 0 ? 'active' : ''}">
+            <span class="active-dot"></span>
+            <div class="tv-thumb">
+                <img src="${item.image}" alt="Thumb">
+            </div>
+            <div class="tv-item-details">
+                <h4 class="tv-item-title">${item.title}</h4>
+                <span class="tv-item-duration">${item.duration}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function renderOpiniSection() {
+    const container = document.getElementById('opiniList');
+    if (!container) return;
+
+    // Fully dynamic titles using Lorem Ipsum
+    const opiniData = Array.from({ length: 6 }, (_, i) => ({
+        title: generateTitle().toUpperCase(),
+        image: `https://picsum.photos/seed/opini-v2-${i}/120/120`
+    }));
+
+    container.innerHTML = opiniData.map(item => `
+        <a href="#" class="opini-item-horiz">
+            <div class="opini-item-content">
+                <h3 class="opini-item-title">${item.title}</h3>
+            </div>
+            <div class="opini-item-thumb">
+                <img src="${item.image}" alt="Opini">
+            </div>
+        </a>
+    `).join('');
+}
+
+function initOpiniScroll() {
+    const list = document.getElementById('opiniList');
+    const prevBtn = document.getElementById('opiniPrevBtn');
+    const nextBtn = document.getElementById('opiniNextBtn');
+    
+    if (!list || !prevBtn || !nextBtn) return;
+
+    const scrollAmount = 400; // Roughly one item width + gap
+
+    prevBtn.addEventListener('click', () => {
+        list.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+        list.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+
+    // Optional: Toggle button visibility based on scroll position
+    const toggleButtons = () => {
+        prevBtn.style.opacity = list.scrollLeft > 10 ? '1' : '0.3';
+        prevBtn.style.pointerEvents = list.scrollLeft > 10 ? 'auto' : 'none';
+        
+        const isAtEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 10;
+        nextBtn.style.opacity = isAtEnd ? '0.3' : '1';
+        nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+    };
+
+    list.addEventListener('scroll', toggleButtons);
+    window.addEventListener('resize', toggleButtons);
+    setTimeout(toggleButtons, 100); // Initial check
 }
 
 // Mobile Menu
@@ -323,14 +437,19 @@ function init() {
     // Render content
     renderHeroSection();
     renderLatestNews();
+    renderTrendingNews();
+    renderTVSection();
+    renderOpiniSection();
     renderCategoryNews('politikNews', 'Politik');
     renderCategoryNews('ekonomiNews', 'Ekonomi');
-    renderPopularNews();
-    renderQuote();
+    renderCategoryNews('hukumNews', 'Hukum');
+    renderCategoryNews('peristiwaNews', 'Peristiwa');
+
     
     // Initialize interactions
     initMobileMenu();
     initNavigation();
+    initOpiniScroll();
     
     console.log('BERNAS - Berita Nasional initialized successfully!');
 }
