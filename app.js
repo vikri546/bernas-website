@@ -327,6 +327,159 @@ function renderOpiniSection() {
     `).join('');
 }
 
+function renderLatestNewsV3() {
+    const container = document.getElementById('latestNewsV3');
+    if (!container) return;
+
+    const news = generateNewsArray(5);
+    container.innerHTML = news.map(item => {
+        const avatarId = getRandomNumber(1, 99);
+        return `
+            <article class="latest-card-v3">
+                <div class="latest-card-v3-img">
+                    <img src="${item.image}" alt="${item.title}">
+                </div>
+                <div class="latest-card-v3-content">
+                    <div class="latest-v3-meta">
+                        <img src="https://i.pravatar.cc/48?img=${avatarId}" alt="Author" class="latest-v3-avatar">
+                        <span class="latest-v3-author">${item.author}</span>
+                        <span class="latest-v3-date">${item.date}</span>
+                    </div>
+                    <a href="#" class="latest-card-v3-title">${item.title.toUpperCase()}</a>
+                </div>
+            </article>
+        `;
+    }).join('');
+}
+
+function initBannerSlider() {
+    const container = document.getElementById('sidebarBanner');
+    if (!container) return;
+
+    const bannerCount = 5;
+    const images = Array.from({ length: bannerCount }, (_, i) => getPicsumImage(getRandomNumber(200, 300), 400, 600));
+
+    container.innerHTML = images.map((img, i) => `
+        <div class="banner-slide ${i === 0 ? 'active' : ''}" style="background-image: url('${img}')"></div>
+    `).join('');
+
+    let currentSlide = 0;
+    const slides = container.querySelectorAll('.banner-slide');
+
+    setInterval(() => {
+        slides[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % slides.length;
+        slides[currentSlide].classList.add('active');
+    }, 5000);
+}
+
+function renderSidebarExtra() {
+    const editorChoiceContainer = document.getElementById('editorChoiceNews');
+    const audioTitle = document.getElementById('audioTitle');
+    
+    if (editorChoiceContainer) {
+        const item = generateNewsItem(0);
+        editorChoiceContainer.innerHTML = `
+            <div class="editor-choice-item">
+                <img src="${item.image}" alt="Editor Choice" class="editor-choice-img">
+                <a href="#" class="editor-choice-title">${item.title.toUpperCase()}</a>
+                <div class="editor-choice-meta-v3">${item.date}</div>
+            </div>
+        `;
+    }
+
+    if (audioTitle) {
+        audioTitle.textContent = generateTitle();
+    }
+}
+
+function renderVotingSection() {
+    const container = document.getElementById('interactiveVoting');
+    if (!container) return;
+
+    const polls = Array.from({ length: 3 }, (_, i) => ({
+        id: 101 + i,
+        question: generateTitle() + "?",
+        options: Array.from({ length: 4 }, () => generateTitle()),
+        votes: getRandomNumber(1000, 15000)
+    }));
+
+    container.innerHTML = polls.map(poll => `
+        <div class="polling-card" id="poll-${poll.id}">
+            <div class="polling-badge">POLLING #${poll.id}</div>
+            <h3 class="polling-question">${poll.question}</h3>
+            
+            <div class="polling-options">
+                ${poll.options.map((opt, idx) => `
+                    <label class="polling-option-label" onclick="castVote(this, ${poll.id})">
+                        <input type="radio" name="poll-${poll.id}" class="polling-radio">
+                        <div class="polling-check"></div>
+                        <span class="polling-option-text">${opt}</span>
+                    </label>
+                `).join('')}
+            </div>
+
+            <div class="poll-results-v4" style="display: none;">
+                <div class="result-bars">
+                    ${poll.options.map((opt, idx) => {
+                        const percent = idx === 0 ? 45 : (idx === 1 ? 30 : (idx === 2 ? 15 : 10));
+                        return `
+                            <div class="poll-result-item">
+                                <div class="res-bar-label">
+                                    <span>${opt}</span>
+                                    <span>${percent}%</span>
+                                </div>
+                                <div class="res-bar-bg"><div class="res-bar-fill" style="width: ${percent}%"></div></div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+
+            <div class="polling-footer">
+                <div class="polling-stats">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <span>${poll.votes.toLocaleString()} VOTES</span>
+                </div>
+                <button class="polling-submit-btn" onclick="submitVote(${poll.id})">KIRIM SUARA</button>
+            </div>
+        </div>
+    `).join('');
+
+    // Generate Dots
+    const dotsContainer = document.getElementById('pollingDots');
+    if (dotsContainer) {
+        dotsContainer.innerHTML = polls.map((_, i) => `
+            <span class="dot ${i === 0 ? 'active' : ''}"></span>
+        `).join('');
+    }
+}
+
+// Global functions for voting interaction
+window.castVote = function(el, pollId) {
+    const card = document.getElementById(`poll-${pollId}`);
+    const labels = card.querySelectorAll('.polling-option-label');
+    labels.forEach(l => l.classList.remove('selected'));
+    el.classList.add('selected');
+    
+    // Check the radio input
+    const radio = el.querySelector('.polling-radio');
+    if (radio) radio.checked = true;
+};
+
+window.submitVote = function(pollId) {
+    const card = document.getElementById(`poll-${pollId}`);
+    const selected = card.querySelector('.polling-option-label.selected');
+    if (!selected) {
+        alert('Silakan pilih salah satu opsi!');
+        return;
+    }
+
+    card.querySelector('.polling-options').style.display = 'none';
+    card.querySelector('.poll-results-v4').style.display = 'block';
+    card.querySelector('.polling-submit-btn').style.display = 'none';
+};
+
 function initOpiniScroll() {
     const list = document.getElementById('opiniList');
     const prevBtn = document.getElementById('opiniPrevBtn');
@@ -357,6 +510,24 @@ function initOpiniScroll() {
     list.addEventListener('scroll', toggleButtons);
     window.addEventListener('resize', toggleButtons);
     setTimeout(toggleButtons, 100); // Initial check
+}
+
+function initPollingSlider() {
+    const container = document.getElementById('interactiveVoting');
+    const dotsContainer = document.getElementById('pollingDots');
+    
+    if (!container || !dotsContainer) return;
+
+    container.addEventListener('scroll', () => {
+        const dots = dotsContainer.querySelectorAll('.dot');
+        const scrollLeft = container.scrollLeft;
+        const cardWidth = container.querySelector('.polling-card').offsetWidth + 20; // 20 is gap
+        const index = Math.round(scrollLeft / cardWidth);
+        
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    });
 }
 
 // Mobile Menu
@@ -444,12 +615,17 @@ function init() {
     renderCategoryNews('ekonomiNews', 'Ekonomi');
     renderCategoryNews('hukumNews', 'Hukum');
     renderCategoryNews('peristiwaNews', 'Peristiwa');
+    renderLatestNewsV3();
+    renderSidebarExtra();
+    renderVotingSection();
 
     
     // Initialize interactions
     initMobileMenu();
     initNavigation();
     initOpiniScroll();
+    initBannerSlider();
+    initPollingSlider();
     
     console.log('BERNAS - Berita Nasional initialized successfully!');
 }
