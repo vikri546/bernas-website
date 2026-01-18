@@ -131,8 +131,29 @@
           <!-- Dynamically generated -->
         </section>
 
-        <!-- Content Grid -->
-        <div class="content-grid">
+        <!-- Description View (Hidden by default) -->
+        <div id="descriptionArea" class="description-view" style="display: none;">
+            <div class="description-layout">
+                <div class="description-main" id="descriptionContent">
+                    <!-- Populated by JS -->
+                </div>
+                <aside class="description-sidebar">
+                    <div class="sidebar-block sticky-sidebar">
+                        <div class="section-header-alt">
+                            <h2 class="section-title-alt">TREND HARI INI</h2>
+                        </div>
+                        <div id="descriptionTrendingNews" class="trending-list-alt">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- Content Grid (Home Page Content) -->
+        <div id="homeContent">
+          <!-- Content Grid -->
+          <div class="content-grid">
           <!-- Main Column -->
           <div class="main-column">
             <!-- Section 2: Terkini & Tren -->
@@ -359,7 +380,6 @@
           </div>
 
           <!-- Sidebar removed for more space -->
-        </div>
       </div>
     </main>
 
