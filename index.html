@@ -28,7 +28,7 @@
         <div class="container">
           <div class="top-navbar-content">
             <!-- Logo -->
-            <a href="#" class="logo">
+            <a href="/" class="logo" id="homeLogo">
               <img src="images/bernas-logo.png" alt="Bernas - Berita Nasional" class="logo-image">
             </a>
             
@@ -60,7 +60,7 @@
         <div class="container">
           <div class="category-nav-content">
             <ul class="category-list" id="categoryList">
-              <li><a href="#" class="category-link active" data-category="politik">POLITIK</a></li>
+              <li><a href="#" class="category-link" data-category="politik">POLITIK</a></li>
               <li><a href="#" class="category-link" data-category="hukum">HUKUM</a></li>
               <li><a href="#" class="category-link" data-category="ekbis">EKBIS</a></li>
               <li><a href="#" class="category-link" data-category="peristiwa">PERISTIWA</a></li>
@@ -106,7 +106,7 @@
         <!-- Mobile Nav Menu -->
         <div class="mobile-nav-menu" id="mobileNavMenu">
           <ul class="mobile-category-list">
-            <li><a href="#" class="mobile-category-link active">POLITIK</a></li>
+            <li><a href="#" class="mobile-category-link" data-category="politik">POLITIK</a></li>
             <li><a href="#" class="mobile-category-link">HUKUM</a></li>
             <li><a href="#" class="mobile-category-link">EKBIS</a></li>
             <li><a href="#" class="mobile-category-link">PERISTIWA</a></li>
@@ -147,6 +147,12 @@
                         </div>
                     </div>
                 </aside>
+            </div>
+        </div>
+        <!-- Category View (Hidden by default) -->
+        <div id="categoryArea" class="category-view" style="display: none;">
+            <div id="categoryContent">
+                <!-- Populated by JS -->
             </div>
         </div>
 

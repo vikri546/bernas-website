@@ -565,21 +565,27 @@ function initNavigation() {
     const categoryLinks = document.querySelectorAll('.category-link');
     const mobileCategoryLinks = document.querySelectorAll('.mobile-category-link');
     
-    const handleCategoryClick = (e, links) => {
+    const handleCategoryClick = (e, links, allLinks) => {
         e.preventDefault();
-        links.forEach(l => l.classList.remove('active'));
+        
+        // Remove active from all links (desktop and mobile)
+        allLinks.forEach(l => l.classList.remove('active'));
+        
+        // Add active to the clicked link
         e.target.classList.add('active');
         
         const category = e.target.dataset.category || e.target.textContent;
-        console.log('Selected category:', category);
+        showCategory(category);
     };
     
+    const allLinks = [...categoryLinks, ...mobileCategoryLinks];
+    
     categoryLinks.forEach(link => {
-        link.addEventListener('click', (e) => handleCategoryClick(e, categoryLinks));
+        link.addEventListener('click', (e) => handleCategoryClick(e, categoryLinks, allLinks));
     });
     
     mobileCategoryLinks.forEach(link => {
-        link.addEventListener('click', (e) => handleCategoryClick(e, mobileCategoryLinks));
+        link.addEventListener('click', (e) => handleCategoryClick(e, mobileCategoryLinks, allLinks));
     });
 }
 
@@ -609,6 +615,8 @@ function renderSearchResults(query) {
     // Show description area as a container for results
     homeContent.style.display = 'none';
     heroSection.style.display = 'none';
+    const categoryArea = document.getElementById('categoryArea');
+    if (categoryArea) categoryArea.style.display = 'none';
     descriptionArea.style.display = 'block';
 
     // Hide extra sections as requested
@@ -690,6 +698,8 @@ window.showDescription = function(news, avatarId) {
     // Hide home content elements
     homeContent.style.display = 'none';
     heroSection.style.display = 'none';
+    const categoryArea = document.getElementById('categoryArea');
+    if (categoryArea) categoryArea.style.display = 'none';
     
     // Show description area
     descriptionArea.style.display = 'block';
@@ -801,10 +811,6 @@ window.showDescription = function(news, avatarId) {
                     <span class="trending-dot"></span>
                     <h4 class="trending-title-alt">${item.title}</h4>
                 </div>
-                <div class="trending-meta-alt">
-                    <span class="trending-author">${item.author.toUpperCase()}</span>
-                    <span class="trending-date">${item.date}</span>
-                </div>
             </div>
         </div>
     `).join('');
@@ -812,16 +818,115 @@ window.showDescription = function(news, avatarId) {
     window.scrollTo(0, 0);
 }
 
+window.showCategory = function(category) {
+    const homeContent = document.getElementById('homeContent');
+    const heroSection = document.getElementById('heroSection');
+    const descriptionArea = document.getElementById('descriptionArea');
+    const categoryArea = document.getElementById('categoryArea');
+
+    if (!homeContent || !categoryArea) return;
+
+    // Hide everything
+    homeContent.style.display = 'none';
+    heroSection.style.display = 'none';
+    descriptionArea.style.display = 'none';
+    
+    // Hide extra sections
+    const tvSection = document.querySelector('.tv-section');
+    const pollingSection = document.querySelector('.polling-section');
+    const opiniSection = document.querySelector('.opini-section-horizontal');
+    const latestSidebarSection = document.querySelector('.latest-sidebar-container');
+    const categoryGridSection = document.querySelector('.category-grid-layout');
+
+    if (tvSection) tvSection.style.display = 'none';
+    if (pollingSection) pollingSection.style.display = 'none';
+    if (opiniSection) opiniSection.style.display = 'none';
+    if (latestSidebarSection) latestSidebarSection.style.display = 'none';
+    if (categoryGridSection) categoryGridSection.style.display = 'none';
+
+    // Show category area
+    categoryArea.style.display = 'block';
+    renderCategoryScreen(category);
+    
+    window.scrollTo(0, 0);
+}
+
+function renderCategoryScreen(category) {
+    const container = document.getElementById('categoryContent');
+    if (!container) return;
+
+    const catNews = generateNewsArray(10, category);
+    const featured = catNews[0];
+    const rest = catNews.slice(1);
+
+    container.innerHTML = `
+        <div class="category-header">
+            <div class="category-breadcrumb">
+                <span>HOME</span> / <span>KATEGORI</span> / <span>${category.toUpperCase()}</span>
+            </div>
+            <h1 class="category-title-large">${category}</h1>
+        </div>
+
+        <div class="category-hero">
+            <div class="cat-hero-featured" onclick="showDescription(${JSON.stringify(featured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                <img src="${featured.image}" alt="${featured.title}" class="cat-hero-img">
+                <div class="cat-hero-overlay">
+                    <h2 class="cat-hero-title">${featured.title.toUpperCase()}</h2>
+                    <p class="cat-hero-excerpt">${featured.excerpt}</p>
+                    <div class="cat-card-meta">${featured.date} | ${featured.author}</div>
+                </div>
+            </div>
+            
+            <div class="cat-sidebar">
+                <div class="section-header-alt">
+                    <h2 class="section-title-alt">TERKINI DI ${category.toUpperCase()}</h2>
+                </div>
+                <div class="trending-list-alt">
+                    ${rest.slice(0, 4).map((item, idx) => `
+                        <div class="trending-item-alt" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                            <div class="trending-number-bg">${idx + 1}</div>
+                            <div class="trending-content-alt">
+                                <h4 class="trending-title-alt">${item.title}</h4>
+                                <div class="trending-meta-alt">${item.date}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+
+        <div class="cat-grid">
+            ${rest.slice(4).map(item => `
+                <div class="cat-card" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                    <img src="${item.image}" alt="${item.title}" class="cat-card-img">
+                    <div class="cat-card-content">
+                        <h3 class="cat-card-title">${item.title}</h3>
+                        <div class="cat-card-meta">${item.date}</div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+
 window.showHome = function() {
     const homeContent = document.getElementById('homeContent');
     const heroSection = document.getElementById('heroSection');
     const descriptionArea = document.getElementById('descriptionArea');
+    const categoryArea = document.getElementById('categoryArea');
     
-    if (!homeContent || !descriptionArea) return;
+    if (!homeContent || !descriptionArea || !categoryArea) return;
 
     homeContent.style.display = 'block';
     heroSection.style.display = 'grid';
     descriptionArea.style.display = 'none';
+    categoryArea.style.display = 'none';
+
+    // Reset navbar active states
+    const categoryLinks = document.querySelectorAll('.category-link');
+    const mobileCategoryLinks = document.querySelectorAll('.mobile-category-link');
+    categoryLinks.forEach(l => l.classList.remove('active'));
+    mobileCategoryLinks.forEach(l => l.classList.remove('active'));
 
     // Show extra sections
     const tvSection = document.querySelector('.tv-section');
@@ -849,6 +954,9 @@ function init() {
     
     // Search
     initSearch();
+    
+    // Navigation
+    initNavigation();
     
     // Render content
     renderHeroSection();
