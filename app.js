@@ -215,12 +215,10 @@ function renderTrendingNews() {
         <div class="trending-item-alt">
             <div class="trending-number-bg">${index + 1}</div>
             <div class="trending-content-alt">
-                <div class="trending-header-alt">
-                    <span class="trending-dot"></span>
-                    <h4 class="trending-title-alt">${item.title}</h4>
-                </div>
+                <h4 class="trending-title-alt">${item.title}</h4>
                 <div class="trending-meta-alt">
                     <span class="trending-author">${item.author.toUpperCase()}</span>
+                    <span class="trending-dot-sep"></span>
                     <span class="trending-date">${item.date}</span>
                 </div>
             </div>
@@ -860,37 +858,48 @@ function renderCategoryScreen(category) {
     const rest = catNews.slice(1);
 
     container.innerHTML = `
-        <div class="category-header">
-            <div class="category-breadcrumb">
-                <span>HOME</span> / <span>KATEGORI</span> / <span>${category.toUpperCase()}</span>
-            </div>
-            <h1 class="category-title-large">${category}</h1>
-        </div>
-
-        <div class="category-hero">
-            <div class="cat-hero-featured" onclick="showDescription(${JSON.stringify(featured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
-                <img src="${featured.image}" alt="${featured.title}" class="cat-hero-img">
-                <div class="cat-hero-overlay">
-                    <h2 class="cat-hero-title">${featured.title.toUpperCase()}</h2>
-                    <p class="cat-hero-excerpt">${featured.excerpt}</p>
-                    <div class="cat-card-meta">${featured.date} | ${featured.author}</div>
-                </div>
-            </div>
+        <div class="category-hero-v3">
+            <!-- Full-screen background image -->
+            <div class="cat-hero-bg" style="background-image: url('${featured.image}')"></div>
+            <div class="cat-hero-overlay-v3"></div>
             
-            <div class="cat-sidebar">
-                <div class="section-header-alt">
-                    <h2 class="section-title-alt">TERKINI DI ${category.toUpperCase()}</h2>
+            <div class="cat-hero-content-v3">
+                <!-- Top Left Category Label -->
+                <div class="cat-hero-label">
+                    ${category.toUpperCase()} <span class="blue-dot"></span>
                 </div>
-                <div class="trending-list-alt">
-                    ${rest.slice(0, 4).map((item, idx) => `
-                        <div class="trending-item-alt" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
-                            <div class="trending-number-bg">${idx + 1}</div>
-                            <div class="trending-content-alt">
-                                <h4 class="trending-title-alt">${item.title}</h4>
-                                <div class="trending-meta-alt">${item.date}</div>
+                
+                <div class="cat-hero-main-grid">
+                    <!-- Grid 1: Featured Content & Image -->
+                    <div class="cat-hero-featured-box">
+                        <div class="cat-hero-info-v3" onclick="showDescription(${JSON.stringify(featured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                            <div class="cat-author-box">
+                                <img src="images/avatars/avatar-${getRandomNumber(1, 99)}.png" class="cat-author-avatar">
+                                <span class="cat-author-name">GEORGE ASEP</span>
                             </div>
+                            <h1 class="cat-main-title">${featured.title.toUpperCase()}</h1>
+                            <div class="cat-main-date">${featured.date}</div>
                         </div>
-                    `).join('')}
+                        
+                        <div class="cat-hero-center-img">
+                            <img src="${featured.image}" alt="${featured.title}">
+                        </div>
+                    </div>
+                    
+                    <!-- Grid 2: Trending List (No Title) -->
+                    <div class="cat-hero-trending-v3">
+                        ${rest.slice(0, 4).map((item, idx) => `
+                            <div class="trending-item-v3" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                                <div class="trending-number-v3">${idx + 1}</div>
+                                <div class="trending-content-v3">
+                                    <h4 class="trending-title-v3">${item.title}</h4>
+                                    <div class="trending-meta-v3">
+                                        <span class="trending-date-v3">${item.date}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
             </div>
         </div>
