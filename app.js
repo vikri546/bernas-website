@@ -853,42 +853,48 @@ function renderCategoryScreen(category) {
     const container = document.getElementById('categoryContent');
     if (!container) return;
 
-    const catNews = generateNewsArray(10, category);
-    const featured = catNews[0];
-    const rest = catNews.slice(1);
+    // Need ~20 items for the new layout
+    const catNews = generateNewsArray(20, category);
+    const heroFeatured = catNews[0];
+    const heroRest = catNews.slice(1, 5);
+    
+    // Row Stage (3 columns)
+    const rowNews1 = catNews[5];
+    const rowNews2 = catNews[6];
+    
+    // Main Section Stage
+    const leftColNews = catNews.slice(7, 14); // 7 items
+    const rightColFeatured = catNews[14]; // 1 sticky hero
+    const rightColList = catNews.slice(15, 19); // 4 sticky list items
 
     container.innerHTML = `
         <div class="category-hero-v3">
-            <!-- Full-screen background image -->
-            <div class="cat-hero-bg" style="background-image: url('${featured.image}')"></div>
+            <div class="cat-hero-bg" style="background-image: url('${heroFeatured.image}')"></div>
             <div class="cat-hero-overlay-v3"></div>
             
             <div class="cat-hero-content-v3">
-                <!-- Top Left Category Label -->
                 <div class="cat-hero-label">
                     ${category.toUpperCase()} <span class="blue-dot"></span>
                 </div>
                 
                 <div class="cat-hero-main-grid">
-                    <!-- Grid 1: Featured Content & Image -->
                     <div class="cat-hero-featured-box">
-                        <div class="cat-hero-info-v3" onclick="showDescription(${JSON.stringify(featured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
+                        <div class="cat-hero-info-v3" onclick="showDescription(${JSON.stringify(heroFeatured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
                             <div class="cat-author-box">
-                                <img src="images/avatars/avatar-${getRandomNumber(1, 99)}.png" class="cat-author-avatar">
-                                <span class="cat-author-name">GEORGE ASEP</span>
+                                <img src="https://i.pravatar.cc/100?img=${getRandomNumber(1, 99)}" class="cat-author-avatar">
+                                <span class="cat-author-name">${heroFeatured.author.toUpperCase()}</span>
                             </div>
-                            <h1 class="cat-main-title">${featured.title.toUpperCase()}</h1>
-                            <div class="cat-main-date">${featured.date}</div>
+                            <h1 class="cat-main-title">${heroFeatured.title.toUpperCase()}</h1>
+                            <div class="cat-main-date">${heroFeatured.date}</div>
                         </div>
                         
                         <div class="cat-hero-center-img">
-                            <img src="${featured.image}" alt="${featured.title}">
+                            <img src="${heroFeatured.image}" alt="${heroFeatured.title}">
                         </div>
                     </div>
                     
-                    <!-- Grid 2: Trending List (No Title) -->
                     <div class="cat-hero-trending-v3">
-                        ${rest.slice(0, 4).map((item, idx) => `
+                        ${heroRest.map((item, idx) => `
                             <div class="trending-item-v3" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
                                 <div class="trending-number-v3">${idx + 1}</div>
                                 <div class="trending-content-v3">
@@ -904,16 +910,95 @@ function renderCategoryScreen(category) {
             </div>
         </div>
 
-        <div class="cat-grid">
-            ${rest.slice(4).map(item => `
-                <div class="cat-card" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor: pointer;">
-                    <img src="${item.image}" alt="${item.title}" class="cat-card-img">
-                    <div class="cat-card-content">
-                        <h3 class="cat-card-title">${item.title}</h3>
-                        <div class="cat-card-meta">${item.date}</div>
+        <div class="container">
+            <!-- Stage 1: Row with 3 Columns -->
+            <div class="cat-secondary-row">
+                <div class="cat-row-col text-col" onclick="showDescription(${JSON.stringify(rowNews1).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})">
+                    <h3 class="cat-col-title">${rowNews1.title}</h3>
+                    <p class="cat-col-desc">${rowNews1.excerpt}</p>
+                    <div class="cat-col-meta">
+                        <span class="cat-col-author">${rowNews1.author}</span>
+                        <span class="cat-col-date">${rowNews1.date}</span>
                     </div>
                 </div>
-            `).join('')}
+                
+                <div class="cat-row-col image-col" onclick="showDescription(${JSON.stringify(rowNews2).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})">
+                    <div class="cat-col-img-wrapper">
+                        <img src="${rowNews2.image}" alt="${rowNews2.title}">
+                    </div>
+                    <h3 class="cat-col-title-small">${rowNews2.title}</h3>
+                    <div class="cat-col-meta">
+                         <span class="cat-col-author">${rowNews2.author}</span>
+                         <span class="cat-col-date">${rowNews2.date}</span>
+                    </div>
+                </div>
+                
+                <div class="cat-row-col ads-col">
+                    <div class="ads-banner-34">
+                        <img src="https://picsum.photos/seed/ads/300/400" alt="Ads Banner">
+                        <span class="ads-label">ADVERTISEMENT</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 2: Main Layout 2 Columns -->
+            <div class="cat-main-layout">
+                <!-- Left Column: 7 random news -->
+                <div class="cat-left-column">
+                    ${leftColNews.map(item => `
+                        <div class="cat-list-item-horiz" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})">
+                            <div class="cat-list-img">
+                                <img src="${item.image}" alt="${item.title}">
+                            </div>
+                            <div class="cat-list-content">
+                                <h3 class="cat-list-title">${item.title}</h3>
+                                <div class="cat-list-meta">
+                                    <span class="cat-list-author">${item.author}</span>
+                                    <span class="cat-list-date">${item.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                    <div class="cat-load-more">
+                        <button class="muat-lagi-btn">MUAT LAGI</button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Sticky 5 news -->
+                <aside class="cat-right-column-sticky">
+                    <div class="sticky-content-wrapper">
+                        <!-- Hero 3:4 -->
+                        <div class="cat-sticky-hero" onclick="showDescription(${JSON.stringify(rightColFeatured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})">
+                            <img src="${rightColFeatured.image}" alt="${rightColFeatured.title}">
+                            <div class="cat-sticky-hero-overlay">
+                                <h3 class="cat-sticky-hero-title">${rightColFeatured.title}</h3>
+                                <div class="cat-sticky-meta">
+                                    <span>${rightColFeatured.author}</span>
+                                    <span>|</span>
+                                    <span>${rightColFeatured.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cat-divider"></div>
+
+                        <!-- 4 List items -->
+                        <div class="cat-sticky-list">
+                            ${rightColList.map((item, idx) => `
+                                <div class="cat-sticky-list-item" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})">
+                                    <h4 class="cat-sticky-list-title">${item.title}</h4>
+                                    <div class="cat-sticky-meta-small">
+                                        <span>${item.author}</span>
+                                        <span class="dot-sep"></span>
+                                        <span>${item.date}</span>
+                                    </div>
+                                </div>
+                                ${idx < rightColList.length - 1 ? '<div class="cat-divider"></div>' : ''}
+                            `).join('')}
+                        </div>
+                    </div>
+                </aside>
+            </div>
         </div>
     `;
 }
