@@ -1905,10 +1905,10 @@ blockquote,
 
 .tv-bg-text {
     position: absolute;
-    top: 2%; /* Positioned at the very top, slightly bleeding out */
+    top: 3%; /* Positioned at the very top, slightly bleeding out */
     left: 50%;
     transform: translateX(-50%);
-    font-size: 7vw; /* Even larger for impact */
+    font-size: 4vw; /* Even larger for impact */
     font-weight: 900;
     color: rgba(255, 255, 255, 0.05);
     white-space: nowrap;

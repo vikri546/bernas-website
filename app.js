@@ -209,7 +209,7 @@ function renderLatestNews() {
 function renderTrendingNews() {
     const container = document.getElementById('trendingNews');
     if (!container) return;
-    const news = generateNewsArray(6);
+    const news = generateNewsArray(5);
     
     container.innerHTML = news.map((item, index) => `
         <div class="trending-item-alt">
