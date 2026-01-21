@@ -274,15 +274,18 @@ function renderBreakingNews() {
 
 function renderTVSection() {
     const headline = document.getElementById('tvHeadline');
-    if (!headline) return;
     const currentTitle = document.getElementById('tvCurrentPlayingTitle');
     const playlist = document.getElementById('tvPlaylist');
     
-    if (!headline || !playlist) return;
+    if (!playlist) return;
 
     const mainTitle = generateTitle();
-    headline.innerHTML = `${mainTitle} <span class="highlight-blue">${getRandomItem(['INVESTASI', 'PENTING', 'TERKINI', 'NASIONAL'])}</span>`;
-    currentTitle.textContent = mainTitle;
+    if (headline) {
+        headline.innerHTML = `${mainTitle} <span class="highlight-blue">${getRandomItem(['INVESTASI', 'PENTING', 'TERKINI', 'NASIONAL'])}</span>`;
+    }
+    if (currentTitle) {
+        currentTitle.textContent = mainTitle;
+    }
 
     const items = Array.from({ length: 5 }, (_, i) => ({
         title: generateTitle(),
@@ -1065,20 +1068,70 @@ function init() {
     renderLatestNewsV3();
     renderSidebarExtra();
     renderVotingSection();
-    
-    // Add event listener to logo to return home
-    const logos = document.querySelectorAll('.logo');
-    logos.forEach(logo => {
-        logo.addEventListener('click', (e) => {
-            e.preventDefault();
-            const searchInput = document.querySelector('.search-input');
-            if (searchInput) searchInput.value = '';
-            showHome();
-        });
-    });
+    // Side Modal
+    initSideModal();
+    updateModalTime();
+    setInterval(updateModalTime, 1000);
 
     console.log('BERNAS - Berita Nasional initialized successfully!');
 }
 
 // Run on DOM ready
 document.addEventListener('DOMContentLoaded', init);
+
+// Side Modal Toggle Logic
+function initSideModal() {
+    const triggerButtons = document.querySelectorAll('.hamburger-menu, #mobileMenuBtn');
+    const sideModal = document.getElementById('sideModal');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    const overlay = document.getElementById('modalOverlay');
+
+    if (!triggerButtons.length || !sideModal || !closeBtn || !overlay) return;
+
+    const openModal = () => {
+        sideModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
+    };
+
+    const closeModal = () => {
+        sideModal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    };
+
+    triggerButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Avoid bubbling issues
+            openModal();
+        });
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Escape key closes modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sideModal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+}
+
+// Real-time Clock for Side Modal (Format: DAY - DD/MM/YYYY)
+function updateModalTime() {
+    const dateTimeDisplay = document.getElementById('modalDateTime');
+    if (!dateTimeDisplay) return;
+
+    const days = ['MINGGU', 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU'];
+    
+    const now = new Date();
+    const dayName = days[now.getDay()];
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+
+    dateTimeDisplay.textContent = `${dayName} - ${day}/${month}/${year} | ${hours}:${minutes}:${seconds}`;
+}
