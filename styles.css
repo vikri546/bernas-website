@@ -1878,15 +1878,51 @@ blockquote,
   }
 }
 
+/* TV Title Wrapper */
+.tv-title-wrapper {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+}
+
+/* TV Divider */
+.tv-divider {
+    border: none;
+    height: 1px;
+    background: var(--color-gray-300);
+    margin: 0 auto;
+    max-width: var(--container-max);
+}
+
+/* TV Watermark Title */
+.tv-watermark-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    text-align: center;
+    color: rgba(59, 130, 246, 0.12);
+    letter-spacing: 4px;
+    line-height: 1.2;
+    position: relative;
+    top: 50px;
+    margin: 0;
+    padding: 10px 0 10px;
+    white-space: nowrap;
+}
+
 /* TV Section Styles */
 .tv-section {
     position: relative;
     padding: 100px 0;
-    background: transparent;
+    background: #111111;
     margin-bottom: 40px;
     overflow: hidden;
     color: #fff;
-    width: 100%;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    border-radius: 0;
 }
 
 .tv-section::before {
