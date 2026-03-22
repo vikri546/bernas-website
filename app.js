@@ -621,12 +621,14 @@ function renderSearchResults(query) {
     descriptionArea.style.display = 'block';
 
     // Hide extra sections as requested
+    const tvTitleWrapper = document.querySelector('.tv-title-wrapper');
     const tvSection = document.querySelector('.tv-section');
     const pollingSection = document.querySelector('.polling-section');
     const opiniSection = document.querySelector('.opini-section-horizontal');
     const latestSidebarSection = document.querySelector('.latest-sidebar-container');
     const categoryGridSection = document.querySelector('.category-grid-layout');
 
+    if (tvTitleWrapper) tvTitleWrapper.style.display = 'none';
     if (tvSection) tvSection.style.display = 'none';
     if (pollingSection) pollingSection.style.display = 'none';
     if (opiniSection) opiniSection.style.display = 'none';
@@ -706,12 +708,14 @@ window.showDescription = function(news, avatarId) {
     descriptionArea.style.display = 'block';
 
     // Hide extra sections as requested
+    const tvTitleWrapper = document.querySelector('.tv-title-wrapper');
     const tvSection = document.querySelector('.tv-section');
     const pollingSection = document.querySelector('.polling-section');
     const opiniSection = document.querySelector('.opini-section-horizontal');
     const latestSidebarSection = document.querySelector('.latest-sidebar-container');
     const categoryGridSection = document.querySelector('.category-grid-layout');
 
+    if (tvTitleWrapper) tvTitleWrapper.style.display = 'none';
     if (tvSection) tvSection.style.display = 'none';
     if (pollingSection) pollingSection.style.display = 'none';
     if (opiniSection) opiniSection.style.display = 'none';
@@ -772,6 +776,17 @@ window.showDescription = function(news, avatarId) {
                 </div>
 
                 <p>${generateLoremIpsum(45)}</p>
+
+                <div class="baca-juga-section">
+                    <span class="baca-juga-label">Baca Juga</span>
+                    <div class="baca-juga-card">
+                        <img src="${getPicsumImage(getRandomNumber(301, 400), 200, 140)}" alt="Baca Juga" class="baca-juga-img">
+                        <div class="baca-juga-info">
+                            <h3 class="baca-juga-title">${generateTitle()}</h3>
+                            <span class="baca-juga-date">${news.date}</span>
+                        </div>
+                    </div>
+                </div>
                 
                 <h2>Ringkasan Peristiwa</h2>
                 <ul>
@@ -800,6 +815,67 @@ window.showDescription = function(news, avatarId) {
                 </div>
             </footer>
         </article>
+
+        <div class="comment-form-section">
+            <div class="comment-form-wrapper">
+                <div class="comment-avatar">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="comment-form-content">
+                    <span class="comment-guest-name">Guest</span>
+                    <div class="comment-input-wrapper">
+                        <input type="text" class="comment-input" placeholder="Tanggapan Anda ..." readonly>
+                        <button class="comment-send-btn" title="Kirim" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14l11 -11" /><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="berita-terkait-section">
+            <h3 class="berita-terkait-title">Berita Terkait</h3>
+            <div class="berita-terkait-grid">
+                ${[0, 1].map(col => {
+                    const featured = generateNewsItem(getRandomNumber(100, 999));
+                    const items = Array.from({ length: 3 }, () => generateNewsItem(getRandomNumber(100, 999)));
+                    return `
+                        <div class="berita-terkait-col">
+                            <div class="berita-terkait-featured" onclick="showDescription(${JSON.stringify(featured).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor:pointer;">
+                                <img src="${featured.image}" alt="${featured.title}" class="berita-terkait-img">
+                                <div class="berita-terkait-featured-info">
+                                    <h4 class="berita-terkait-featured-title">${featured.title.toUpperCase()}</h4>
+                                    <span class="berita-terkait-date">${featured.date}</span>
+                                </div>
+                            </div>
+                            <ul class="berita-terkait-list">
+                                ${items.map(item => `
+                                    <li class="berita-terkait-item" onclick="showDescription(${JSON.stringify(item).replace(/"/g, '&quot;')}, ${getRandomNumber(1, 99)})" style="cursor:pointer;">
+                                        ${item.title.toUpperCase()}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+
+        <div class="visual-section">
+            <div class="visual-grid">
+                <div class="visual-track">
+                    ${(() => {
+                        const vImgs = [
+                            getPicsumImage(getRandomNumber(400, 500), 400, 560),
+                            getPicsumImage(getRandomNumber(501, 600), 400, 560),
+                            getPicsumImage(getRandomNumber(601, 700), 400, 560),
+                            getPicsumImage(getRandomNumber(701, 800), 400, 560)
+                        ];
+                        return [...vImgs, ...vImgs].map(src => `<div class="visual-item"><img src="${src}" alt="Visual"></div>`).join('');
+                    })()}
+                </div>
+            </div>
+        </div>
     `;
 
     // Populate Trending News in Description
@@ -815,6 +891,17 @@ window.showDescription = function(news, avatarId) {
             </div>
         </div>
     `).join('');
+
+    // Visual track touch pause (mobile)
+    const visualTrack = document.querySelector('.visual-track');
+    if (visualTrack) {
+        visualTrack.addEventListener('touchstart', () => {
+            visualTrack.classList.add('touch-paused');
+        }, { passive: true });
+        visualTrack.addEventListener('touchend', () => {
+            setTimeout(() => visualTrack.classList.remove('touch-paused'), 1000);
+        });
+    }
 
     window.scrollTo(0, 0);
 }
@@ -833,12 +920,14 @@ window.showCategory = function(category) {
     descriptionArea.style.display = 'none';
     
     // Hide extra sections
+    const tvTitleWrapper = document.querySelector('.tv-title-wrapper');
     const tvSection = document.querySelector('.tv-section');
     const pollingSection = document.querySelector('.polling-section');
     const opiniSection = document.querySelector('.opini-section-horizontal');
     const latestSidebarSection = document.querySelector('.latest-sidebar-container');
     const categoryGridSection = document.querySelector('.category-grid-layout');
 
+    if (tvTitleWrapper) tvTitleWrapper.style.display = 'none';
     if (tvSection) tvSection.style.display = 'none';
     if (pollingSection) pollingSection.style.display = 'none';
     if (opiniSection) opiniSection.style.display = 'none';
@@ -1026,12 +1115,14 @@ window.showHome = function() {
     mobileCategoryLinks.forEach(l => l.classList.remove('active'));
 
     // Show extra sections
+    const tvTitleWrapper = document.querySelector('.tv-title-wrapper');
     const tvSection = document.querySelector('.tv-section');
     const pollingSection = document.querySelector('.polling-section');
     const opiniSection = document.querySelector('.opini-section-horizontal');
     const latestSidebarSection = document.querySelector('.latest-sidebar-container');
     const categoryGridSection = document.querySelector('.category-grid-layout');
 
+    if (tvTitleWrapper) tvTitleWrapper.style.display = 'block';
     if (tvSection) tvSection.style.display = 'block';
     if (pollingSection) pollingSection.style.display = 'block';
     if (opiniSection) opiniSection.style.display = 'block';
